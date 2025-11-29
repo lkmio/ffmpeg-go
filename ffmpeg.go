@@ -14,6 +14,10 @@ import (
 #cgo linux,arm64 LDFLAGS: -lffmpeg_linux_arm64
 #cgo linux LDFLAGS: -lm -ldl
 
+#cgo windows LDFLAGS: -L${SRCDIR}
+#cgo windows,amd64 LDFLAGS:  -lavcodec.dll -lavformat.dll -lavutil.dll -lswscale.dll -lswresample.dll -lavdevice.dll -lavfilter.dll -lpostproc.dll
+#cgo windows LDFLAGS: -lm -lz
+
 #cgo darwin LDFLAGS: -L${SRCDIR} -lm -framework ApplicationServices -framework CoreVideo -framework CoreMedia -framework VideoToolbox -framework AudioToolbox
 #cgo darwin,amd64 LDFLAGS: -lffmpeg_darwin_amd64
 #cgo darwin,arm64 LDFLAGS: -lffmpeg_darwin_arm64
@@ -71,7 +75,7 @@ type CStr struct {
 
 // AllocCStr allocates an empty string with the given length. The buffer will be initialised to 0.
 func AllocCStr(len uint) *CStr {
-	ptr := (*C.char)(C.calloc(C.ulong(len), C.sizeof_char))
+	ptr := (*C.char)(C.calloc(C.size_t(len), C.sizeof_char))
 
 	return &CStr{
 		ptr: ptr,
